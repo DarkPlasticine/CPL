@@ -1,0 +1,29 @@
+﻿<Window x:Class="Wpf_CPL.AuthVk"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        xmlns:local="clr-namespace:Wpf_CPL"
+        Title="Авторизация во ВКонтакте" Height="200" Width="300"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Name="wndAuth"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <StackPanel VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <materialDesign:PackIcon Grid.Row="2" Grid.Column="0" Kind="Account" Foreground="{Binding ElementName=AccountBox, Path=BorderBrush}"  VerticalAlignment="Center"/>
+                <ComboBox x:Name="AccountBox" materialDesign:HintAssist.Hint="Логин" Width="200" Margin="8 0 0 0" IsEditable="True" 
+                          ItemsSource="{Binding ElementName=wndAuth, Path=Get}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="0"
+                         SelectionChanged="AccountBox_SelectionChanged"/>
+                <Button Margin="8 0 0 0" Visibility="Hidden" Width="50"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0 8 0 0">
+                <materialDesign:PackIcon Grid.Row="2" Grid.Column="0" Kind="Key" Foreground="{Binding ElementName=PasswordBox, Path=BorderBrush}"  VerticalAlignment="Center"/>
+                <PasswordBox x:Name="PasswordBox" materialDesign:HintAssist.Hint="Пароль" Width="200" Margin="8 0 0 0" local:PasswordHelper.Attach="True" local:PasswordHelper.Password="{Binding GetP, ElementName=AccountBox}" />
+                <Button Margin="8 0 0 0" IsEnabled="False" Name="btnLang" Width="50" HorizontalContentAlignment="Left"/>
+            </StackPanel>
+            <CheckBox Margin="0 8 0 0" HorizontalAlignment="Center" Content="Запомнить меня" x:Name="chkRemember"/>
+            <Button Margin="8 8 8 0" Content="Авторизоваться" x:Name="Auth" Click="Auth_Click" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

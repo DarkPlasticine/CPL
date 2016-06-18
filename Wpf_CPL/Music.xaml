@@ -1,0 +1,66 @@
+﻿<Window x:Class="Wpf_CPL.music"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:local="clr-namespace:Wpf_CPL"
+        mc:Ignorable="d"
+        Title="Поиск музыки" Height="550" Width="700"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" 
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Name="wndMusic">
+    <Grid>
+        <dragablz:TabablzControl Margin="0 0 0 35">
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController />
+            </dragablz:TabablzControl.InterTabController>
+            
+            <!--Поиск аудио вконтакте-->
+            <TabItem Header="Поиск во ВКонтакте" Name="tiSearch">
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Bottom" Margin="0 8" >
+                        <CheckBox Content="Поиск по исполнителю" VerticalAlignment="Center" DockPanel.Dock="Left" Name="chkAuthor" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        <Button Name="btnSAdd" Content="Загрузить еще" DockPanel.Dock="Right" Margin="0 0 8 0" Click="btnSAdd_Click"/>
+                        <Button Name="btnSearch" Content="Поиск" DockPanel.Dock="Right" Margin="0 0 8 0" Click="btnSearch_Click"/>
+                        <TextBox Name="txtSearch" Margin="8 0 8 0" materialDesign:HintAssist.Hint="Поиск песен" Foreground="{DynamicResource MaterialDesignBody}"/>
+                    </DockPanel>
+                    <Border DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="#00bfa5"/>
+                    <ListBox DockPanel.Dock="Top" ItemsSource="{Binding listSearch}" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="lbxMusic" Foreground="{DynamicResource MaterialDesignBody}">
+                        <ListBox.ItemTemplate>
+                            <HierarchicalDataTemplate>
+                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}"/>
+                            </HierarchicalDataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>                    
+                </DockPanel>
+            </TabItem>
+            
+            <!--Получение записей своих и друзей-->
+            <TabItem Header="Получить Аудио" Name="tiGet">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="8" HorizontalAlignment="Right">
+                        <ComboBox ItemsSource="{Binding Path=GetPeople}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedIndex="0" Width="170" Margin="0 0 8 0" Name="cmbFri"/>
+                        <Button  Content="Получить" Click="Button_Click_1"/>
+                    </StackPanel>
+                    <Border DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="#00bfa5" />
+                    <ListBox DockPanel.Dock="Top" Name="lbxGetFriends" ItemsSource="{Binding listGet}" ScrollViewer.VerticalScrollBarVisibility="Visible" Foreground="{DynamicResource MaterialDesignBody}">
+                        <ListBox.ItemTemplate>
+                            <HierarchicalDataTemplate>
+                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}"/>
+                            </HierarchicalDataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </TabItem>
+        </dragablz:TabablzControl>
+        <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="   Добавить   " Name="btnAdd" IsDefault="True" Click="btnAdd_Click"/>
+            <Button Content="Закрыть" Margin="8 0 8 0" IsDefault="True" Click="Button_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
