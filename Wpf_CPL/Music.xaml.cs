@@ -39,8 +39,9 @@ namespace Wpf_CPL
             GetPeople = GetPeopleList;
             
             InitializeComponent();
-            cmbFri.DataContext =  GetPeopleList;
+            cmbFri.ItemsSource =  GetPeopleList;
             lbxMusic.ItemsSource = listSearch;
+            lbxGetFriends.ItemsSource = listGet;
         }
 
         public Dictionary<int, string> GetPeople { get; set; }
@@ -142,56 +143,34 @@ namespace Wpf_CPL
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-           
+            listGet.Clear();
+            var _audioParams = new AudioGetParams();
+            int key = GetPeopleList.FirstOrDefault(x => x.Value == (string)cmbFri.Text).Key;
+            _audioParams.OwnerId = key;
+            var _user = new User();
+            var _audioList = App.AuthPublic.Audio.Get(out _user, _audioParams);
+
+            foreach (var s in _audioList)
+            {
+                CheckedListItem chk = new CheckedListItem();
+                chk.Id = (int)s.Id;
+                chk.Name = string.Format("{0} - {1}", s.Artist, s.Title);
+                chk.Path = s.Url;
+                listGet.Add(chk);
+            }
+            lbxGetFriends.Items.Refresh();
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (chkAll.IsChecked == true)
+                listGet.ForEach(p => p.IsChecked = true);
+            else
+                listGet.ForEach(p => p.IsChecked = false);
+
+            lbxGetFriends.Items.Refresh();
         }
 
 
     }
-        //private void trvMusic_Expanded(object sender, RoutedEventArgs e)
-        //{
-        //    //      LoadDisk();
-           
-        //    TreeViewItem item = (TreeViewItem)e.OriginalSource;
-        //    item.Items.Clear();
-        //    DirectoryInfo dir;
-        //    if (item.Tag is DriveInfo)
-        //    {
-        //        DriveInfo drive = (DriveInfo)item.Tag;
-        //        dir = drive.RootDirectory;
-        //    }
-        //    else dir = (DirectoryInfo)item.Tag;
-        //    try
-        //    {
-        //        foreach (DirectoryInfo subDir in dir.GetDirectories())
-        //        {
-        //            TreeViewItem newItem = new TreeViewItem();
-        //            newItem.Tag = subDir;
-        //            newItem.Header = subDir.ToString();
-        //            newItem.Items.Add("*");
-        //            item.Items.Add(newItem);
-        //        }
-        //    }
-        //    catch
-        //    { }
-        //}
-
-        //public  class DirectoryRecord
-        //{
-        //    public DirectoryInfo Info { get; set; }
-
-        //    public IEnumerable<FileInfo> Files 
-        //    {
-        //        get { return Info.GetFiles(); }
-        //    }
-
-        //    public IEnumerable<DirectoryRecord> Directories
-        //    {
-        //        get
-        //        {
-        //            return from di in Info.GetDirectories("*", SearchOption.AllDirectories)
-        //                   select new DirectoryRecord { Info = di };
-        //        }
-        //    }
-        //}
-   
 }

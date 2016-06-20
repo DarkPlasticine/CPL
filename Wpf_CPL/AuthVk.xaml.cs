@@ -88,7 +88,7 @@ namespace Wpf_CPL
                     {
                         if (dicSU.ContainsKey(apia.Login))//проверяем, есть ли такая пара логин/пароль
                         {
-                            if (dicSU[apia.Login] != apia.Password)//если есть, и текущий введеный пароль не совпадает с сохранненым, прашиваем сохранить ли введенный сейчас.
+                            if (dicSU[apia.Login] != apia.Password)//если есть, и текущий введеный пароль не совпадает с сохранненым, cпрашиваем сохранить ли введенный сейчас.
                             {
                                 if (MessageBox.Show("Пароль не совпадает с текущим, сохранить новый пароль?", "Ошибка", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                                 {

@@ -21,6 +21,7 @@ using VkNet.Exception;
 using VkNet.Model;
 using VkNet.Utils;
 using Ookii.Dialogs.Wpf;
+using System.Net;
 
 namespace Wpf_CPL
 {
@@ -33,6 +34,7 @@ namespace Wpf_CPL
         Settings scope = Settings.All;
         Random rnd = new Random();
         public List<FileItem> fullList = new List<FileItem>(); //Полный список песен
+        public List<FileItem> vkList = new List<FileItem>(); //Лист с песнями вк;
         List<FileItem> tmpList = new List<FileItem>(); //Временный список
         int CountM = 0; //Количество всех песен
 
@@ -68,13 +70,11 @@ namespace Wpf_CPL
                 {
                     FileItem fi = new FileItem(r.Name);
                     fi.Url = r.Path;
-                    fullList.Add(fi);
+                    vkList.Add(fi);
                     lbMusic.Items.Add(fi.FullName);
                 }
                 frmMusic.Close();
-
             }
-            // frmMusic.Show();
         }
 
         private void lbMusic_Drop(object sender, DragEventArgs e)
@@ -98,7 +98,6 @@ namespace Wpf_CPL
         {
             try
             {
-                CountM -= Directory.GetFiles(lbMusic.SelectedItem.ToString(), "*.mp3", SearchOption.AllDirectories).Count();
                 lbMusic.Items.Remove(lbMusic.SelectedItem);
             }
             catch { }
@@ -136,6 +135,7 @@ namespace Wpf_CPL
         public void FindFiles(string dir, string pattern)
         {
             FindInDir(new DirectoryInfo(dir), pattern, true);
+           
         }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
@@ -144,8 +144,7 @@ namespace Wpf_CPL
             {
                 if (lbMusic.Items.Count < 1)
                 {
-                    throw new Exception("Добавьте файлы в список!");
-                    //MessageBox.Show("Добавьте файлы в список!");
+                    throw new Exception("Добавьте файлы в список!");                  
                 }
                 else
                 {
@@ -156,12 +155,14 @@ namespace Wpf_CPL
 
                         for (int i = 0; i < lbMusic.Items.Count; i++)
                         {
-                            FindFiles(lbMusic.Items[i].ToString(), "*.mp3");
+                            if (lbMusic.Items[i].ToString().Contains(@"\"))
+                                FindFiles(lbMusic.Items[i].ToString(), "*.mp3");
                         }
+                        fullList.AddRange(vkList);
+                        CreatePL();
                     }
                     else
                         throw new Exception("Выберите: Копировать на устройство или создать *.PLS");
-                    // MessageBox.Show("Выберите: Копировать на устройство или создать *.PLS");
                 }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
@@ -179,6 +180,45 @@ namespace Wpf_CPL
         private void Window_Closed(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        public void CreatePL()
+        {
+            int num = 1;
+            for (int i = 0; i < fullList.Count.ToString().Length; i++)
+                num *= 10;
+
+            int qq = 1;
+
+            foreach (var f in fullList)
+            {
+                double q = (double)qq / (double)num;
+
+                string numName = q.ToString().Substring(q.ToString().IndexOf(',') + 1);
+
+                if (numName.Length < fullList.Count.ToString().Length)
+                {
+                    int tt = fullList.Count.ToString().Length - numName.Length;
+
+                    for (int i = 0; i < tt; i++)
+                        numName += "0";
+                }
+
+                string name = numName + ".mp3";
+
+                if (f.Url != null)
+                {
+                    DownloadMP3(f, Path.Combine(txtPath.Text, name));
+                }
+                else
+                    File.Copy(f.FullName, Path.Combine(txtPath.Text, name), true);
+            }
+        }
+
+        public void DownloadMP3(FileItem _fi, string _path)
+        {
+            WebClient _web = new WebClient();
+            _web.DownloadFileAsync(_fi.Url, _path);
         }
     }
 
