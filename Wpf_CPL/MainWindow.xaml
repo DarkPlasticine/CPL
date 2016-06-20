@@ -43,8 +43,8 @@
                 <Button Width="270" Content="Начать копирование" Name="btnStart" Click="btnStart_Click"/>
                 <Button Content="||" Margin="8 0 0 0"/>
             </StackPanel>
-            <ProgressBar Margin="0 8 0 0" Height="25" Value="50" />
-            <TextBlock Text="Progress" HorizontalAlignment="Center"/>
+            <ProgressBar Margin="0 8 0 0" Height="25" Value="0" Name="pbProgress" Maximum="100"/>
+            <TextBlock Text="0 %" HorizontalAlignment="Center" Name="txbProgress"/>
         </StackPanel>
         
     </Grid>
