@@ -9,13 +9,13 @@
         AllowDrop="True" Drop="lbMusic_Drop" Closed="Window_Closed">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <StackPanel Orientation="Horizontal" Grid.Row="0" DockPanel.Dock="Top">
                 <Button Height="35" Margin="8 8 0 8"  Content="Авторизация во ВКонтакте" Click="btnAuthVk_Click" Name="btnAuthVk"/>
                 <ToggleButton Margin="8 0 0 0" Style="{StaticResource MaterialDesignActionDarkToggleButton}" IsEnabled="False" VerticalAlignment="Center">
                     <Image Source="{Binding}" Name="imgLogo" Stretch="UniformToFill"/>
                 </ToggleButton>
             </StackPanel>
-            <Grid Height="300">
+            <Grid Height="300" DockPanel.Dock="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="65"/>
@@ -35,16 +35,20 @@
                 <Button Grid.Column="1" Height="35" Content="..." Margin="8" Name="btnChoose" Click="btnChoose_Click"/>
             </Grid>
             <StackPanel Orientation="Horizontal">
-                <TextBox Width="110"  materialDesign:HintAssist.Hint="Количество треков" Margin="8 8 0 0"/>
+                <TextBox Width="110"  materialDesign:HintAssist.Hint="Количество треков" Margin="8 8 0 0" Name="tbxCount"/>
                 <CheckBox Content="Копировать" VerticalAlignment="Center" Margin="8 0 8 0" Name="chkCopy"/>
                 <CheckBox Content="Создать *.PLS" VerticalAlignment="Center" Name="chkPls"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 8 0 0">
                 <Button Width="270" Content="Начать копирование" Name="btnStart" Click="btnStart_Click"/>
-                <Button Content="||" Margin="8 0 0 0"/>
+                <Button Content="||" Margin="8 0 0 0" Visibility="Collapsed"/>
             </StackPanel>
             <ProgressBar Margin="0 8 0 0" Height="25" Value="0" Name="pbProgress" Maximum="100"/>
-            <TextBlock Text="0 %" HorizontalAlignment="Center" Name="txbProgress"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Height="25" Width="25" Name="pbCircle" Visibility="Collapsed">
+                </ProgressBar>
+                <TextBlock Text="0 %" HorizontalAlignment="Center" Name="txbProgress" VerticalAlignment="Center" Margin="8 0 0 0"/>
+            </StackPanel>
         </StackPanel>
         
     </Grid>

@@ -25,13 +25,14 @@ using System.Net;
 using System.ComponentModel;
 using System.Windows.Threading;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace Wpf_CPL
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public VkApi vkapi = new VkApi();
         Settings scope = Settings.All;
@@ -40,9 +41,22 @@ namespace Wpf_CPL
         public List<FileItem> vkList = new List<FileItem>(); //Лист с песнями вк;
         List<FileItem> tmpList = new List<FileItem>(); //Временный список
         int CountM = 0; //Количество всех песен
-        private BackgroundWorker backgroundWorker;
+        string SavePath;
+        BackgroundWorker backgroundWorker;
 
-        // Dispatcher mWorker =  Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background, new System.Threading.ThreadStart(delegate { }));
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int MyCount
+        {
+            get { return CountM; }
+            set { CountM = value; OnPropertyChanged(); }
+        }
+
+        private void OnPropertyChanged([CallerMemberName]string propertyName = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public MainWindow()
         {
@@ -56,15 +70,12 @@ namespace Wpf_CPL
 
         }
 
-
         private void btnAuthVk_Click(object sender, RoutedEventArgs e)
         {
             AuthVk avk = new AuthVk();
             avk.Owner = this;
             if (avk.ShowDialog() == true)
             {
-                //vkapi = avk.vk;
-
                 ProfileFields pf = new ProfileFields();
                 pf = ProfileFields.Photo50;
 
@@ -89,6 +100,9 @@ namespace Wpf_CPL
                 }
                 frmMusic.Close();
             }
+
+            CountM += vkList.Count;
+            tbxCount.Text = CountM.ToString();
         }
 
         private void lbMusic_Drop(object sender, DragEventArgs e)
@@ -104,7 +118,9 @@ namespace Wpf_CPL
 
             foreach (string s in droppedFiles)
             {
+                CountM += Directory.GetFiles(s, "*.mp3", SearchOption.AllDirectories).Count();
                 lbMusic.Items.Add(s);
+                tbxCount.Text = CountM.ToString();
             }
         }
 
@@ -112,10 +128,18 @@ namespace Wpf_CPL
         {
             try
             {
+                if (Directory.Exists(lbMusic.SelectedItem.ToString()))
+                    CountM -= Directory.GetFiles(lbMusic.SelectedItem.ToString(), "*.mp3", SearchOption.AllDirectories).Count();
+                else
+                    CountM -= 1;
                 lbMusic.Items.Remove(lbMusic.SelectedItem);
+                tbxCount.Text = CountM.ToString();
+
             }
             catch { }
         }
+
+        #region Поиск файлов
 
         /// <summary>
         /// Поиск файла в папке
@@ -152,46 +176,48 @@ namespace Wpf_CPL
 
         }
 
+        #endregion
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate ()
+                if (lbMusic.Items.Count < 1)
                 {
-                    if (lbMusic.Items.Count < 1)
+                    throw new Exception("Добавьте файлы в список!");
+                }
+                else
+                {
+                    if (chkCopy.IsChecked == true || chkPls.IsChecked == true)
                     {
-                        throw new Exception("Добавьте файлы в список!");
+                        fullList.Clear();
+                        tmpList.Clear();
+
+                        for (int i = 0; i < lbMusic.Items.Count; i++)
+                        {
+                            if (Directory.Exists(lbMusic.SelectedItem.ToString()))
+                                FindFiles(lbMusic.Items[i].ToString(), "*.mp3");
+                        }
+
+                        fullList.AddRange(vkList);
+                        CountM = fullList.Count;
+                        pbProgress.Value = 0;
+                        pbProgress.Maximum = 100;
+                        SavePath = txtPath.Text;
+                        pbCircle.Visibility = Visibility.Visible;
+                        tbxCount.Text = CountM.ToString();
+                        backgroundWorker.RunWorkerAsync();
                     }
                     else
-                    {
-                        if (chkCopy.IsChecked == true || chkPls.IsChecked == true)
-                        {
-                            fullList.Clear();
-                            tmpList.Clear();
-
-                            for (int i = 0; i < lbMusic.Items.Count; i++)
-                            {
-                                if (lbMusic.Items[i].ToString().Contains(@"\"))
-                                    FindFiles(lbMusic.Items[i].ToString(), "*.mp3");
-                            }
-                            fullList.AddRange(vkList);
-                            CountM = fullList.Count;
-                            backgroundWorker.RunWorkerAsync();
-                            // CreatePL();
-                        }
-                        else
-                            throw new Exception("Выберите: Копировать на устройство или создать *.PLS");
-                    }
-                });
+                        throw new Exception("Выберите: Копировать на устройство или создать *.PLS");
+                }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
         private void btnChoose_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
+            var dlg = new VistaFolderBrowserDialog();
             if (dlg.ShowDialog() == true)
             {
                 txtPath.Text = dlg.SelectedPath;
@@ -203,27 +229,29 @@ namespace Wpf_CPL
             this.Close();
         }
 
-        public void CreatePL()
+        public void CreatePL(List<FileItem> _fullList)
         {
             int num = 1;
-            for (int i = 0; i < CountM.ToString().Length; i++)
+            int _countM = _fullList.Count;
+            int percent = 100 / _countM; 
+            for (int i = 0; i < _countM.ToString().Length; i++)
                 num *= 10;
             int qq = 1;
 
             FileItem fi;
 
-            for (int f = 0; f <= CountM; f++)
+            do
             {
-                int _tmpRnd = rnd.Next(fullList.Count);
-                fi = fullList[_tmpRnd];
+                int _tmpRnd = rnd.Next(_fullList.Count);
+                fi = _fullList[_tmpRnd];
 
                 double q = (double)qq / (double)num;
 
                 string numName = q.ToString().Substring(q.ToString().IndexOf(',') + 1);
 
-                if (numName.Length <= CountM.ToString().Length)
+                if (numName.Length <= _countM.ToString().Length)
                 {
-                    int tt = CountM.ToString().Length - numName.Length;
+                    int tt = _countM.ToString().Length - numName.Length;
 
                     for (int i = 0; i < tt; i++)
                         numName += "0";
@@ -231,44 +259,29 @@ namespace Wpf_CPL
 
                 string name = numName + ".mp3";
 
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate ()
+                if (fi.Url != null)
                 {
-                    if (fi.Url != null)
-                    {
-                        WebClient _web = new WebClient();
-                        _web.DownloadFile(fi.Url, Path.Combine(txtPath.Text, name));
-                    }
-                    else
-                        File.Copy(fi.FullName, Path.Combine(txtPath.Text, name), true);
-                });
+                    WebClient _web = new WebClient();
+                    _web.DownloadFile(fi.Url, Path.Combine(SavePath, name));
+                }
+                else
+                    File.Copy(fi.FullName, Path.Combine(SavePath, name), true);
                 qq++;
-                fullList.RemoveAt(_tmpRnd);
-                backgroundWorker.ReportProgress((qq / CountM) * 100, Convert.ToString((qq / (double)CountM) * 100) + " %");
-            }
-        }
-    
-        public void DownloadMP3(FileItem _fi, string _path)
-        {
-            
+                _fullList.RemoveAt(_tmpRnd);
+                backgroundWorker.ReportProgress(percent);
+                percent += 100 / _countM;
+            } while (_fullList.Count != 0);
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            // pbProgress.Value = 0;
-            //pbProgress.Maximum = fullList.Count;
-            //  txbProgress.Text = "0 %";
-           
-                SetPL();
-            
+            CreatePL(fullList);
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if (e.UserState != null)
-            {
-                pbProgress.Value = e.ProgressPercentage;
-                txbProgress.Text = e.UserState.ToString();
-            }
+            pbProgress.Value = e.ProgressPercentage;
+            txbProgress.Text = e.ProgressPercentage.ToString() + " %";
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -279,23 +292,10 @@ namespace Wpf_CPL
                 MessageBox.Show("Error: " + e.Error.Message);
             else
             {
-                txbProgress.Text = "100,0 %";
+                txbProgress.Text = "100 %";
+                pbCircle.Visibility = Visibility.Collapsed;
                // MessageBox.Show(String.Format("Копирование завершено! Скопировано {0} файлов!", CountM));
             }
-        }
-
-        public void SetPL()
-        {
-            this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate ()
-            {
-                if (chkCopy.IsChecked == true)
-                    CreatePL();
-                if (chkPls.IsChecked == true)
-                { int i = 0; }
-                else
-                    backgroundWorker.ReportProgress(100, "100,0 %");
-
-            });
         }
     }
 
