@@ -6,7 +6,8 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" WindowStartupLocation="CenterScreen"
-        AllowDrop="True" Drop="lbMusic_Drop" Closed="Window_Closed">
+        AllowDrop="True" Drop="lbMusic_Drop" Closed="Window_Closed"
+        Icon="vk(1).ico">
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Grid.Row="0" DockPanel.Dock="Top">

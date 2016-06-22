@@ -13,7 +13,8 @@
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" 
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        Name="wndMusic">
+        Name="wndMusic"
+        Icon="vk(1).ico">
     <Grid>
         <dragablz:TabablzControl Margin="0 0 0 35">
             <dragablz:TabablzControl.InterTabController>

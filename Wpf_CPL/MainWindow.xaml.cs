@@ -195,7 +195,7 @@ namespace Wpf_CPL
 
                         for (int i = 0; i < lbMusic.Items.Count; i++)
                         {
-                            if (Directory.Exists(lbMusic.SelectedItem.ToString()))
+                           if (Directory.Exists(lbMusic.Items[i].ToString()))
                                 FindFiles(lbMusic.Items[i].ToString(), "*.mp3");
                         }
 
@@ -293,8 +293,8 @@ namespace Wpf_CPL
             else
             {
                 txbProgress.Text = "100 %";
+                pbProgress.Value = 100;
                 pbCircle.Visibility = Visibility.Collapsed;
-               // MessageBox.Show(String.Format("Копирование завершено! Скопировано {0} файлов!", CountM));
             }
         }
     }

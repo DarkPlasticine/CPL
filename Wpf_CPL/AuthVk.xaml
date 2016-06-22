@@ -7,7 +7,8 @@
         Background="{DynamicResource MaterialDesignPaper}"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Name="wndAuth"
-        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        Icon="vk(1).ico">
     <Grid>
         <StackPanel VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
