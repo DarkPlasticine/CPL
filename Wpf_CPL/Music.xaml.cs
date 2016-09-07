@@ -116,9 +116,11 @@ namespace Wpf_CPL
             {
                 CheckedListItem chk = new CheckedListItem();
                 chk.Id = (int)s.Id;
-                chk.Name = string.Format("{0} - {1}", s.Artist, s.Title);
+                chk.Name = string.Format("{0} - {1}", s.Artist.Trim(), s.Title.Trim());
                 chk.Path = s.Url;
-                listSearch.Add(chk);
+
+                if (listSearch.Where(p => p.Name.ToLower() == chk.Name.ToLower()).Count() < 1)
+                    listSearch.Add(chk);
             }
             lbxMusic.Items.Refresh();
         }
@@ -157,7 +159,8 @@ namespace Wpf_CPL
                 chk.Id = (int)s.Id;
                 chk.Name = string.Format("{0} - {1}", s.Artist, s.Title);
                 chk.Path = s.Url;
-                listGet.Add(chk);
+
+                    listGet.Add(chk);
             }
             lbxGetFriends.Items.Refresh();
         }
@@ -172,6 +175,28 @@ namespace Wpf_CPL
             lbxGetFriends.Items.Refresh();
         }
 
+        private void txtSearch_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                btnSearch_Click(sender,e);
+        }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            listSearch.ForEach(p => p.IsChecked = true);
+            lbxMusic.Items.Refresh();
+        }
+               
+        private void cmiDisableAll_Click(object sender, RoutedEventArgs e)
+        {
+            listSearch.ForEach(p => p.IsChecked = false);
+            lbxMusic.Items.Refresh();
+        }
+
+        private void cmiInvert_Click(object sender, RoutedEventArgs e)
+        {
+            listSearch.ForEach(p => { if (p.IsChecked == false) p.IsChecked = true; else p.IsChecked = false; });
+            lbxMusic.Items.Refresh();
+        }
     }
 }

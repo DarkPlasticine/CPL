@@ -28,7 +28,7 @@
                         <CheckBox Content="Поиск по исполнителю" VerticalAlignment="Center" DockPanel.Dock="Left" Name="chkAuthor" Foreground="{DynamicResource MaterialDesignBody}"/>
                         <Button Name="btnSAdd" Content="Загрузить еще" DockPanel.Dock="Right" Margin="0 0 8 0" Click="btnSAdd_Click"/>
                         <Button Name="btnSearch" Content="Поиск" DockPanel.Dock="Right" Margin="0 0 8 0" Click="btnSearch_Click"/>
-                        <TextBox Name="txtSearch" Margin="8 0 8 0" materialDesign:HintAssist.Hint="Поиск песен" Foreground="{DynamicResource MaterialDesignBody}"/>
+                        <TextBox Name="txtSearch" Margin="8 0 8 0" materialDesign:HintAssist.Hint="Поиск песен" Foreground="{DynamicResource MaterialDesignBody}" PreviewKeyDown="txtSearch_PreviewKeyDown"/>
                     </DockPanel>
                     <Border DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="#00bfa5"/>
                     <ListBox DockPanel.Dock="Top" ItemsSource="{Binding listSearch}" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="lbxMusic" Foreground="{DynamicResource MaterialDesignBody}">
@@ -37,6 +37,13 @@
                                 <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}"/>
                             </HierarchicalDataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Выбрать все" Click="MenuItem_Click"/>
+                                <MenuItem Header="Отменить все" Name="cmiDisableAll" Click="cmiDisableAll_Click"/>
+                                <MenuItem Header="Инвертировать выделение" Name="cmiInvert" Click="cmiInvert_Click"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
                     </ListBox>                    
                 </DockPanel>
             </TabItem>
