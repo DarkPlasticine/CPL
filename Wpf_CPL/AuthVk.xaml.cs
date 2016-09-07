@@ -30,7 +30,7 @@ namespace Wpf_CPL
     /// </summary>
     public partial class AuthVk : Window
     {
-        public VkApi vk = new VkApi();
+        //public VkApi vk = new VkApi();
         Settings scope = Settings.All;
         public static Dictionary<string, string> dicSU = new SerializableDictionary<string, string>();
 
@@ -117,7 +117,7 @@ namespace Wpf_CPL
         public void Save(Dictionary<string, string> _dic)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(SerializableDictionary<string, string>));
-            using (FileStream fs = new FileStream("settings.dat", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream("settings.dat", FileMode.Open))
             {
                 xmlSerializer.Serialize(fs, _dic);
             }
@@ -133,8 +133,16 @@ namespace Wpf_CPL
                 }
             else
             {
-                Dictionary<string, string> s = new Dictionary<string,string>();
-                return s;
+                using (StreamWriter fs = new StreamWriter("settings.dat"))
+                {
+                    fs.WriteLine("<?xml version=\"1.0\"?>");
+                    fs.WriteLine("<dictionary>");
+                    fs.WriteLine("</dictionary>");
+                }
+
+                    //Dictionary<string, string> s = new Dictionary<string,string>();
+                    //Save(s);
+                    return Load();
             }
         }
 
@@ -143,7 +151,6 @@ namespace Wpf_CPL
             if (AccountBox.SelectedIndex != -1 && dicSU.ContainsKey(AccountBox.Text))
             {
                 PasswordBox.Password = AccountBox.SelectedValue.ToString();
-                
             }
         }
     }

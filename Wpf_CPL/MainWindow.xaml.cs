@@ -101,7 +101,7 @@ namespace Wpf_CPL
                 frmMusic.Close();
             }
 
-            CountM += vkList.Count;
+            CountM = lbMusic.Items.Count;
             tbxCount.Text = CountM.ToString();
         }
 
@@ -202,7 +202,7 @@ namespace Wpf_CPL
                         fullList.AddRange(vkList);
                         CountM = fullList.Count;
                         pbProgress.Value = 0;
-                        pbProgress.Maximum = 100;
+                        pbProgress.Maximum = CountM;
                         SavePath = txtPath.Text;
                         pbCircle.Visibility = Visibility.Visible;
                         tbxCount.Text = CountM.ToString();
@@ -233,7 +233,7 @@ namespace Wpf_CPL
         {
             int num = 1;
             int _countM = _fullList.Count;
-            int percent = 100 / _countM; 
+            double percent = (double)100 / _countM; 
             for (int i = 0; i < _countM.ToString().Length; i++)
                 num *= 10;
             int qq = 1;
@@ -268,8 +268,8 @@ namespace Wpf_CPL
                     File.Copy(fi.FullName, Path.Combine(SavePath, name), true);
                 qq++;
                 _fullList.RemoveAt(_tmpRnd);
-                backgroundWorker.ReportProgress(percent);
-                percent += 100 / _countM;
+                backgroundWorker.ReportProgress(qq, Math.Round(percent, 2));
+                percent += (double)100 / _countM;
             } while (_fullList.Count != 0);
         }
 
@@ -281,7 +281,9 @@ namespace Wpf_CPL
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             pbProgress.Value = e.ProgressPercentage;
-            txbProgress.Text = e.ProgressPercentage.ToString() + " %";
+            //txbProgress.Text = e.ProgressPercentage.ToString() + " %";
+           // pbProgress.Value = (int)sender;
+            txbProgress.Text = e.UserState.ToString() + " %";
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

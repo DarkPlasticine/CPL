@@ -144,6 +144,7 @@ namespace Wpf_CPL
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             listGet.Clear();
+            chkAll.IsChecked = false;
             var _audioParams = new AudioGetParams();
             int key = GetPeopleList.FirstOrDefault(x => x.Value == (string)cmbFri.Text).Key;
             _audioParams.OwnerId = key;
