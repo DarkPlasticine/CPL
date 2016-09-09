@@ -37,9 +37,9 @@ namespace Wpf_CPL
         public VkApi vkapi = new VkApi();
         Settings scope = Settings.All;
         Random rnd = new Random();
-        public List<FileItem> fullList = new List<FileItem>(); //Полный список песен
-        public List<FileItem> vkList = new List<FileItem>(); //Лист с песнями вк;
-        List<FileItem> tmpList = new List<FileItem>(); //Временный список
+        public List<MusicClass> fullList = new List<MusicClass>(); //Полный список песен
+        public List<MusicClass> vkList = new List<MusicClass>(); //Лист с песнями вк;
+        List<MusicClass> tmpList = new List<MusicClass>(); //Временный список
         int CountM = 0; //Количество всех песен
         string SavePath;
         BackgroundWorker backgroundWorker;
@@ -79,7 +79,9 @@ namespace Wpf_CPL
                 ProfileFields pf = new ProfileFields();
                 pf = ProfileFields.Photo50;
 
+                var _name = App.AuthPublic.Account.GetProfileInfo();
                 imgLogo.Source = new BitmapImage(new Uri(App.AuthPublic.Users.Get(App.AuthPublic.UserId.Value, pf).Photo50.ToString()));
+                txbUserName.Text = _name.FirstName + " " + _name.LastName;
                 btnAdd.IsEnabled = true;
             }
         }
@@ -93,10 +95,15 @@ namespace Wpf_CPL
             {
                 foreach (var r in frmMusic.listVk)
                 {
-                    FileItem fi = new FileItem(r.Name);
-                    fi.Url = r.Path;
-                    vkList.Add(fi);
-                    lbMusic.Items.Add(fi.FullName);
+                    //FileItem fi = new FileItem(r.Name);
+
+                    MusicClass mc = new MusicClass();
+                    //mc.Name = r.Name;
+                    //mc.Path = 
+                    mc = r;
+                    //fi.Url = r.Path;
+                    vkList.Add(mc);
+                    lbMusic.Items.Add(mc.Name);
                 }
                 frmMusic.Close();
             }
@@ -153,7 +160,8 @@ namespace Wpf_CPL
             {
                 foreach (FileInfo file in dir.GetFiles(pattern))
                 {
-                    FileItem s = new FileItem(file.FullName);
+                    MusicClass s = new MusicClass();
+                    s.Path = new Uri(file.FullName);
                     fullList.Add(s);
                 }
                 if (recursive)
@@ -229,7 +237,7 @@ namespace Wpf_CPL
             this.Close();
         }
 
-        public void CreatePL(List<FileItem> _fullList)
+        public void CreatePL(List<MusicClass> _fullList)
         {
             int num = 1;
             int _countM = _fullList.Count;
@@ -238,7 +246,7 @@ namespace Wpf_CPL
                 num *= 10;
             int qq = 1;
 
-            FileItem fi;
+            MusicClass fi;
 
             do
             {
@@ -259,13 +267,9 @@ namespace Wpf_CPL
 
                 string name = numName + ".mp3";
 
-                if (fi.Url != null)
-                {
-                    WebClient _web = new WebClient();
-                    _web.DownloadFile(fi.Url, Path.Combine(SavePath, name));
-                }
-                else
-                    File.Copy(fi.FullName, Path.Combine(SavePath, name), true);
+                WebClient _web = new WebClient();
+                _web.DownloadFileAsync(fi.Path, Path.Combine(SavePath, name));
+                
                 qq++;
                 _fullList.RemoveAt(_tmpRnd);
                 backgroundWorker.ReportProgress(qq, Math.Round(percent, 2));
@@ -281,8 +285,6 @@ namespace Wpf_CPL
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             pbProgress.Value = e.ProgressPercentage;
-            //txbProgress.Text = e.ProgressPercentage.ToString() + " %";
-           // pbProgress.Value = (int)sender;
             txbProgress.Text = e.UserState.ToString() + " %";
         }
 
@@ -295,7 +297,7 @@ namespace Wpf_CPL
             else
             {
                 txbProgress.Text = "100 %";
-                pbProgress.Value = 100;
+                pbProgress.Value = pbProgress.Maximum;
                 pbCircle.Visibility = Visibility.Collapsed;
             }
         }

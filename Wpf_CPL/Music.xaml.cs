@@ -28,9 +28,9 @@ namespace Wpf_CPL
     public partial class music : Window
     {
         public VkApi vk;
-        public List<CheckedListItem> listVk = new List<CheckedListItem>();
-        private List<CheckedListItem> listSearch = new List<CheckedListItem>();
-        private List<CheckedListItem> listGet = new List<CheckedListItem>();
+        public List<MusicClass> listVk = new List<MusicClass>();
+        private List<MusicClass> listSearch = new List<MusicClass>();
+        private List<MusicClass> listGet = new List<MusicClass>();
         
         string _Query;
 
@@ -115,7 +115,7 @@ namespace Wpf_CPL
 
             foreach (var s in tmpList)
             {
-                CheckedListItem chk = new CheckedListItem();
+                MusicClass chk = new MusicClass();
                 chk.Id = (int)s.Id;
                 chk.Name = string.Format("{0} - {1}", s.Artist.Trim(), s.Title.Trim());
                 chk.Path = s.Url;
@@ -123,11 +123,11 @@ namespace Wpf_CPL
 
                 string _sUrl = s.Url.ToString().Substring(0, s.Url.ToString().IndexOf(".mp3")+4);
 
-                TagLib.File _file = TagLib.File.Create(new VfsFileAbstraction());
-                ICodec _codec = (ICodec)_file.Properties.Codecs;
-                IAudioCodec _acodec = _codec as IAudioCodec;
+                //TagLib.File _file = TagLib.File.Create(new VfsFileAbstraction());
+                //ICodec _codec = (ICodec)_file.Properties.Codecs;
+                //IAudioCodec _acodec = _codec as IAudioCodec;
 
-                chk.Duration = _acodec.AudioBitrate.ToString();
+                //chk.Duration = _acodec.AudioBitrate.ToString();
 
                 if (listSearch.Where(p => p.Name.ToLower() == chk.Name.ToLower()).Count() < 1)
                     listSearch.Add(chk);
@@ -165,7 +165,7 @@ namespace Wpf_CPL
 
             foreach (var s in _audioList)
             {
-                CheckedListItem chk = new CheckedListItem();
+                MusicClass chk = new MusicClass();
                 chk.Id = (int)s.Id;
                 chk.Name = string.Format("{0} - {1}", s.Artist, s.Title);
                 chk.Path = s.Url;

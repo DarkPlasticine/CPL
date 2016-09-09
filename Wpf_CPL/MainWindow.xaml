@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="Create Playlist" Height="600" Width="500"
+        MinHeight="600" MinWidth="500"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" WindowStartupLocation="CenterScreen"
@@ -15,6 +16,7 @@
                 <ToggleButton Margin="8 0 0 0" Style="{StaticResource MaterialDesignActionDarkToggleButton}" IsEnabled="False" VerticalAlignment="Center">
                     <Image Source="{Binding}" Name="imgLogo" Stretch="UniformToFill"/>
                 </ToggleButton>
+                <TextBlock Name="txbUserName" Text="{Binding}" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" IsEnabled="False"/>
             </StackPanel>
             <Grid Height="300" DockPanel.Dock="Right">
                 <Grid.ColumnDefinitions>
