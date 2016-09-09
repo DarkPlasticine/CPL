@@ -18,6 +18,7 @@ using VkNet.Model;
 using VkNet.Model.RequestParams;
 using VkNet.Enums;
 using VkNet.Enums.Filters;
+using TagLib;
 
 namespace Wpf_CPL
 {
@@ -119,6 +120,14 @@ namespace Wpf_CPL
                 chk.Name = string.Format("{0} - {1}", s.Artist.Trim(), s.Title.Trim());
                 chk.Path = s.Url;
                 chk.Duration = String.Format("{0}:{1:00}", s.Duration / 60,  s.Duration - ((s.Duration / 60)*60));
+
+                string _sUrl = s.Url.ToString().Substring(0, s.Url.ToString().IndexOf(".mp3")+4);
+
+                TagLib.File _file = TagLib.File.Create(new VfsFileAbstraction());
+                ICodec _codec = (ICodec)_file.Properties.Codecs;
+                IAudioCodec _acodec = _codec as IAudioCodec;
+
+                chk.Duration = _acodec.AudioBitrate.ToString();
 
                 if (listSearch.Where(p => p.Name.ToLower() == chk.Name.ToLower()).Count() < 1)
                     listSearch.Add(chk);
