@@ -35,8 +35,8 @@ namespace Wpf_CPL
 
         public music()
         {
-            GetFriends();
-            GetPeople = GetPeopleList;
+            GetFriends();//Получаем друзей
+            GetPeople = GetPeopleList; //Выводим в список
             
             InitializeComponent();
             cmbFri.ItemsSource =  GetPeopleList;
@@ -69,7 +69,6 @@ namespace Wpf_CPL
             listSearch.Clear();
             _Query = txtSearch.Text;
             GetAudio(_Query, listSearch.Count);
-           
         }
 
         /// <summary>
@@ -87,10 +86,11 @@ namespace Wpf_CPL
         /// </summary>
         public class CheckedListItem
         {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public bool IsChecked { get; set; }
-            public Uri Path { get; set; }
+            public int Id { get; set; } //Id композиции
+            public string Name { get; set; } //Название композиции и исполнителя
+            public bool IsChecked { get; set; }//Добавление в список
+            public Uri Path { get; set; }//Пусть скачки композиции
+            public string Duration { get; set; }//Длительность аудиозаписи
         }
 
         /// <summary>
@@ -118,6 +118,7 @@ namespace Wpf_CPL
                 chk.Id = (int)s.Id;
                 chk.Name = string.Format("{0} - {1}", s.Artist.Trim(), s.Title.Trim());
                 chk.Path = s.Url;
+                chk.Duration = String.Format("{0}:{1:00}", s.Duration / 60,  s.Duration - ((s.Duration / 60)*60));
 
                 if (listSearch.Where(p => p.Name.ToLower() == chk.Name.ToLower()).Count() < 1)
                     listSearch.Add(chk);
@@ -159,8 +160,9 @@ namespace Wpf_CPL
                 chk.Id = (int)s.Id;
                 chk.Name = string.Format("{0} - {1}", s.Artist, s.Title);
                 chk.Path = s.Url;
+                chk.Duration = String.Format("{0}:{1:00}", s.Duration / 60, s.Duration - ((s.Duration / 60) * 60));
 
-                    listGet.Add(chk);
+                listGet.Add(chk);
             }
             lbxGetFriends.Items.Refresh();
         }

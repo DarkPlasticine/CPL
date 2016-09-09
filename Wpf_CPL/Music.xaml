@@ -31,10 +31,15 @@
                         <TextBox Name="txtSearch" Margin="8 0 8 0" materialDesign:HintAssist.Hint="Поиск песен" Foreground="{DynamicResource MaterialDesignBody}" PreviewKeyDown="txtSearch_PreviewKeyDown"/>
                     </DockPanel>
                     <Border DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="#00bfa5"/>
-                    <ListBox DockPanel.Dock="Top" ItemsSource="{Binding listSearch}" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="lbxMusic" Foreground="{DynamicResource MaterialDesignBody}">
-                        <ListBox.ItemTemplate>
+                    <ListBox DockPanel.Dock="Top" ItemsSource="{Binding listSearch}" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="lbxMusic" Foreground="{DynamicResource MaterialDesignBody}" HorizontalContentAlignment="Stretch">
+                       
+                        <ListBox.ItemTemplate >
                             <HierarchicalDataTemplate>
-                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}"/>
+                                <DockPanel>
+                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" DockPanel.Dock="Left" Panel.ZIndex="0"/>
+                                    <Label Content="{Binding Duration}" DockPanel.Dock="Right" Panel.ZIndex="5"/>
+                                    <TextBlock Text=""/>
+                                </DockPanel>
                             </HierarchicalDataTemplate>
                         </ListBox.ItemTemplate>
                         <ListBox.ContextMenu>
