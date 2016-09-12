@@ -30,7 +30,7 @@
                         <Button Name="btnSearch" Content="Поиск" DockPanel.Dock="Right" Margin="0 0 8 0" Click="btnSearch_Click"/>
                         <TextBox Name="txtSearch" Margin="8 0 8 0" materialDesign:HintAssist.Hint="Поиск песен" Foreground="{DynamicResource MaterialDesignBody}" PreviewKeyDown="txtSearch_PreviewKeyDown"/>
                     </DockPanel>
-                    <Border DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="#00bfa5"/>
+                    <Border DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="#03A9F4"/>
                     <ListBox DockPanel.Dock="Top" ItemsSource="{Binding listSearch}" ScrollViewer.VerticalScrollBarVisibility="Visible" Name="lbxMusic" Foreground="{DynamicResource MaterialDesignBody}" HorizontalContentAlignment="Stretch">
                        
                         <ListBox.ItemTemplate >

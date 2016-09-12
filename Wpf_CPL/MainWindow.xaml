@@ -23,10 +23,10 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="65"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Margin="8 0 0 0" Grid.Column="0" BorderBrush="#00bfa5" BorderThickness="1" x:Name="lbMusic"/>
+                <ListBox Margin="8 0 0 0" Grid.Column="0" BorderBrush="#03A9F4" BorderThickness="1" x:Name="lbMusic"/>
                 <StackPanel Grid.Column="1">
-                    <Button Height="35" Width="45" Margin="8 0 8 0" Content="+" FontWeight="Bold" Name="btnAdd" Click="btnAdd_Click" IsEnabled="False" ToolTip="Авторизуйтесь во Вконтакте"/>
-                    <Button Height="35" Width="45" Margin="8 8 8 0" Content="-" FontWeight="Bold" Name="btnDel" Click="btnDel_Click"/>
+                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Margin="8 0 8 0" Content="+" FontWeight="Bold" Name="btnAdd" Click="btnAdd_Click" IsEnabled="False" ToolTip="Добавление песен из Вконтакте"/>
+                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Margin="8 8 8 0" Content="-" FontWeight="Bold" Name="btnDel" Click="btnDel_Click" ToolTip="Удаление позиции из списка"/>
                 </StackPanel>
             </Grid>
             <Grid Margin=" 0 8 0 0">

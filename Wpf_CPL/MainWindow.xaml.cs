@@ -95,13 +95,8 @@ namespace Wpf_CPL
             {
                 foreach (var r in frmMusic.listVk)
                 {
-                    //FileItem fi = new FileItem(r.Name);
-
                     MusicClass mc = new MusicClass();
-                    //mc.Name = r.Name;
-                    //mc.Path = 
                     mc = r;
-                    //fi.Url = r.Path;
                     vkList.Add(mc);
                     lbMusic.Items.Add(mc.Name);
                 }
@@ -126,7 +121,7 @@ namespace Wpf_CPL
             foreach (string s in droppedFiles)
             {
                 CountM += Directory.GetFiles(s, "*.mp3", SearchOption.AllDirectories).Count();
-                lbMusic.Items.Add(s);
+                FindFiles(s, "*.mp3");
                 tbxCount.Text = CountM.ToString();
             }
         }
@@ -162,6 +157,8 @@ namespace Wpf_CPL
                 {
                     MusicClass s = new MusicClass();
                     s.Path = new Uri(file.FullName);
+                    s.Name = file.Name;
+                    lbMusic.Items.Add(s.Name);
                     fullList.Add(s);
                 }
                 if (recursive)
@@ -181,7 +178,6 @@ namespace Wpf_CPL
         public void FindFiles(string dir, string pattern)
         {
             FindInDir(new DirectoryInfo(dir), pattern, true);
-
         }
 
         #endregion
@@ -198,19 +194,20 @@ namespace Wpf_CPL
                 {
                     if (chkCopy.IsChecked == true || chkPls.IsChecked == true)
                     {
-                        fullList.Clear();
+                        //fullList.Clear();
                         tmpList.Clear();
 
-                        for (int i = 0; i < lbMusic.Items.Count; i++)
-                        {
-                           if (Directory.Exists(lbMusic.Items[i].ToString()))
-                                FindFiles(lbMusic.Items[i].ToString(), "*.mp3");
-                        }
+                        //for (int i = 0; i < lbMusic.Items.Count; i++)
+                        //{
+                        //   if (Directory.Exists(lbMusic.Items[i].ToString()))
+                        //        FindFiles(lbMusic.Items[i].ToString(), "*.mp3");
+                        //}
 
                         fullList.AddRange(vkList);
+                        //fullList.AddRange(lbMusic.Items);
                         CountM = fullList.Count;
                         pbProgress.Value = 0;
-                        pbProgress.Maximum = CountM;
+                       // pbProgress.Maximum = CountM;
                         SavePath = txtPath.Text;
                         pbCircle.Visibility = Visibility.Visible;
                         tbxCount.Text = CountM.ToString();
@@ -226,6 +223,7 @@ namespace Wpf_CPL
         private void btnChoose_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new VistaFolderBrowserDialog();
+            dlg.ShowNewFolderButton = true;
             if (dlg.ShowDialog() == true)
             {
                 txtPath.Text = dlg.SelectedPath;
@@ -241,15 +239,16 @@ namespace Wpf_CPL
         {
             int num = 1;
             int _countM = _fullList.Count;
-            double percent = (double)100 / _countM; 
+            tmpList.Clear();
             for (int i = 0; i < _countM.ToString().Length; i++)
                 num *= 10;
             int qq = 1;
 
-            MusicClass fi;
+            MusicClass fi, tmpMC;
 
             do
             {
+                tmpMC = new MusicClass();
                 int _tmpRnd = rnd.Next(_fullList.Count);
                 fi = _fullList[_tmpRnd];
 
@@ -267,14 +266,44 @@ namespace Wpf_CPL
 
                 string name = numName + ".mp3";
 
-                WebClient _web = new WebClient();
-                _web.DownloadFileAsync(fi.Path, Path.Combine(SavePath, name));
-                
+                tmpMC.Id = qq;
+                tmpMC.Name = Path.Combine(SavePath, name);
+                tmpMC.Path = fi.Path;
+
+                tmpList.Add(tmpMC);
+
                 qq++;
                 _fullList.RemoveAt(_tmpRnd);
-                backgroundWorker.ReportProgress(qq, Math.Round(percent, 2));
-                percent += (double)100 / _countM;
+
             } while (_fullList.Count != 0);
+
+            DownloadMusicFiles(tmpList);
+        }
+
+        public async Task DownloadMusicFiles(List<MusicClass> files)
+        {
+            double percent = (double)100 / files.Count;
+            Dispatcher.Invoke(new ThreadStart(delegate { txbProgress.Text = "0 %"; }));
+            WebClient _web = new WebClient();
+
+            _web.DownloadProgressChanged += (s, e) =>
+                {
+                    Dispatcher.Invoke(new ThreadStart(delegate { pbProgress.Value = e.ProgressPercentage; }));
+                };
+
+            Dispatcher.Invoke(new ThreadStart(delegate { pbCircle.Visibility = Visibility.Visible; }));
+
+            foreach (MusicClass _music in files)
+            {
+                
+                await _web.DownloadFileTaskAsync(_music.Path, _music.Name);
+                Dispatcher.Invoke(new ThreadStart(delegate { txbProgress.Text = Math.Round(percent, 2).ToString() + " %"; }));
+                percent += percent;
+            }
+
+            _web.Dispose();
+            Dispatcher.Invoke(new ThreadStart(delegate { pbProgress.Value = pbProgress.Maximum; }));
+            Dispatcher.Invoke(new ThreadStart(delegate { pbCircle.Visibility = Visibility.Hidden; }));
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -284,8 +313,8 @@ namespace Wpf_CPL
 
         private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            pbProgress.Value = e.ProgressPercentage;
-            txbProgress.Text = e.UserState.ToString() + " %";
+           // pbProgress.Value = e.ProgressPercentage;
+            txbProgress.Text = e.UserState.ToString();
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -296,9 +325,8 @@ namespace Wpf_CPL
                 MessageBox.Show("Error: " + e.Error.Message);
             else
             {
-                txbProgress.Text = "100 %";
-                pbProgress.Value = pbProgress.Maximum;
-                pbCircle.Visibility = Visibility.Collapsed;
+                //txbProgress.Text = "100 %";
+                
             }
         }
     }
