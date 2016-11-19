@@ -26,6 +26,8 @@ using System.ComponentModel;
 using System.Windows.Threading;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using MaterialDesignThemes.Wpf;
+
 
 namespace Wpf_CPL
 {
@@ -298,12 +300,19 @@ namespace Wpf_CPL
                 
                 await _web.DownloadFileTaskAsync(_music.Path, _music.Name);
                 Dispatcher.Invoke(new ThreadStart(delegate { txbProgress.Text = Math.Round(percent, 2).ToString() + " %"; }));
-                percent += percent;
+                percent += (double)100 / files.Count;
             }
 
             _web.Dispose();
             Dispatcher.Invoke(new ThreadStart(delegate { pbProgress.Value = pbProgress.Maximum; }));
             Dispatcher.Invoke(new ThreadStart(delegate { pbCircle.Visibility = Visibility.Hidden; }));
+
+            var sampleMessageDialog = new SampleMessageDialog
+            {
+                Message = { Text = "Все готово!" }
+            };
+
+            await DialogHost.Show(sampleMessageDialog, "RootDialog");
         }
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -328,23 +337,6 @@ namespace Wpf_CPL
                 //txbProgress.Text = "100 %";
                 
             }
-        }
-    }
-
-    public class FileItem
-    {
-        public string FullName { get; set; }
-
-        public Uri Url { get; set; }
-
-        public FileItem(string file)
-        {
-            this.FullName = file;
-        }
-
-        public override string ToString()
-        {
-            return Path.GetFileNameWithoutExtension(FullName);
         }
     }
 }

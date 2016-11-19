@@ -99,6 +99,9 @@
     </Compile>
     <Compile Include="MusicClass.cs" />
     <Compile Include="PasswordHelper.cs" />
+    <Compile Include="SampleMessageDialog.xaml.cs">
+      <DependentUpon>SampleMessageDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SerializableDictionary.cs" />
     <Page Include="AuthVk.xaml">
       <SubType>Designer</SubType>
@@ -122,6 +125,10 @@
     <Page Include="Music.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SampleMessageDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
