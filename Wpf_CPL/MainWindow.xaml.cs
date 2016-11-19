@@ -300,6 +300,7 @@ namespace Wpf_CPL
                 
                 await _web.DownloadFileTaskAsync(_music.Path, _music.Name);
                 Dispatcher.Invoke(new ThreadStart(delegate { txbProgress.Text = Math.Round(percent, 2).ToString() + " %"; }));
+                Dispatcher.Invoke(new ThreadStart(delegate { pbCircle.Value = Math.Round(percent); }));
                 percent += (double)100 / files.Count;
             }
 

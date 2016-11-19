@@ -48,7 +48,7 @@
             </StackPanel>
             <ProgressBar Margin="0 8 0 0" Height="25" Value="0" Name="pbProgress" Maximum="100"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Height="25" Width="25" Name="pbCircle" Visibility="Collapsed">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="False" Height="25" Width="25" Name="pbCircle" Visibility="Hidden">
                 </ProgressBar>
                 <TextBlock Text="0 %" HorizontalAlignment="Center" Name="txbProgress" VerticalAlignment="Center" Margin="8 0 0 0"/>
             </StackPanel>

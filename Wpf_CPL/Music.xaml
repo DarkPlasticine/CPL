@@ -60,6 +60,7 @@
                         <CheckBox Content="Выбрать все" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesignBody}" Checked="CheckBox_Checked" Name="chkAll"/>
                         <ComboBox ItemsSource="{Binding Path=GetPeople}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedIndex="0" Width="170" Margin="8 0 8 0" Name="cmbFri" Foreground="{DynamicResource MaterialDesignBody}" IsEditable="True"/>
                         <Button  Content="Получить" Click="Button_Click_1"/>
+                        <Button Content="Получить со стены" Click="btnGetWall_Click" Name="btnGetWall"/>
                     </StackPanel>
                     <Border DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="#00bfa5" />
                     <ListBox DockPanel.Dock="Top" Name="lbxGetFriends" ItemsSource="{Binding listGet}" ScrollViewer.VerticalScrollBarVisibility="Visible" Foreground="{DynamicResource MaterialDesignBody}">

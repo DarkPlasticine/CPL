@@ -176,6 +176,28 @@ namespace Wpf_CPL
             lbxGetFriends.Items.Refresh();
         }
 
+        private void btnGetWall_Click(object sender, RoutedEventArgs e)
+        {
+            listGet.Clear();
+            chkAll.IsChecked = false;
+            int key = GetPeopleList.FirstOrDefault(x => x.Value == (string)cmbFri.Text).Key;
+            var _wallParams = new WallGetParams();
+            _wallParams.OwnerId = key;
+            int offset = 0;
+            
+            _wallParams.Count = 100;
+            var _wall = App.AuthPublic.Wall.Get(_wallParams);
+
+            foreach (var w in _wall.WallPosts)
+            {
+
+            }
+
+            var _user = new User();
+            
+                
+        }
+
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             if (chkAll.IsChecked == true)
@@ -209,5 +231,7 @@ namespace Wpf_CPL
             listSearch.ForEach(p => { if (p.IsChecked == false) p.IsChecked = true; else p.IsChecked = false; });
             lbxMusic.Items.Refresh();
         }
+
+        
     }
 }
